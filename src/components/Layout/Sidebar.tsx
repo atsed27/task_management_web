@@ -1,9 +1,13 @@
 'use client';
 
+import { useFetch } from '@/hook/useFetch';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function Sidebar() {
+  const { data, error, isLoading } = useFetch('');
+  console.log('data', data, isLoading, error);
+
   return (
     <nav
       className={cn(
