@@ -3,10 +3,20 @@
 import { useFetch } from '@/hook/useFetch';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Button } from '../ui/button';
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
+import { AddMainDialog } from '../dialog/AddMainTask';
+import { mainTask } from '@/type/task/type';
 
 export default function Sidebar() {
-  const { data, error, isLoading } = useFetch('');
-  console.log('data', data, isLoading, error);
+  const [cardOpen, setIsCardOpen] = useState(false);
+  const handleAdd = () => {
+    setIsCardOpen(true);
+  };
+  const closeCardDialog = () => setIsCardOpen(false);
+  const { data, refetch } = useFetch('main/task'); // Fetch tasks
+  const tasks: mainTask[] = Array.isArray(data) ? data : [];
 
   return (
     <nav
@@ -16,18 +26,35 @@ export default function Sidebar() {
     >
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <div className="space-y-1">
-            <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
-              Task Management
-            </h2>
+          <div className="space-y-1 ">
+            <div className="flex items-center justify-between">
+              <h2 className="mb-2 px-4 text-xl font-semibold tracking-tight">
+                Tasks
+              </h2>
+              <Button onClick={handleAdd}>
+                <Plus />
+              </Button>
+            </div>
             <div className="flex items-stretch flex-col">
-              <Link href={'/task/1'}>Task 1</Link>
-              <Link href={'/task/erp'}>Task 2</Link>
-              <Link href={'/'}>Task 3</Link>
+              {tasks.length > 0 ? (
+                tasks.map((task) => (
+                  <Link key={task.id} href={`/task/${task.id}`}>
+                    {task.title}
+                  </Link>
+                ))
+              ) : (
+                <p>No tasks available</p>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      <AddMainDialog
+        open={cardOpen}
+        onClose={closeCardDialog}
+        refetch={refetch}
+      />
     </nav>
   );
 }

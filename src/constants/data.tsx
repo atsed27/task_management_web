@@ -8,6 +8,7 @@ export const Data = [
 export const card = [
   {
     id: '1',
+    header: 'erp',
     title: 'todo',
     task: [
       {
@@ -20,6 +21,7 @@ export const card = [
   },
   {
     id: '2',
+    header: 'Erp',
     title: 'done',
     task: [
       {

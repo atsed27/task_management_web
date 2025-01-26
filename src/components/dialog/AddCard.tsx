@@ -33,10 +33,9 @@ export function ADDCarDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Add Task</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you are done.
-            It&apos;s easy!
+            Can Add Task Now It&apos;s easy!
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

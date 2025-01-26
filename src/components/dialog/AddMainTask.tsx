@@ -1,10 +1,7 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -14,9 +11,8 @@ import { Label } from '../ui/label';
 import { useState } from 'react';
 import { usePost } from '@/hook/usePost';
 import toast from 'react-hot-toast';
-import { useParams } from 'next/navigation';
 
-export function AddListDialog({
+export function AddMainDialog({
   open,
   onClose,
   refetch,
@@ -25,34 +21,32 @@ export function AddListDialog({
   onClose: () => void;
   refetch: () => void;
 }) {
-  const [name, setName] = useState('');
-  const { mutate } = usePost('main/card');
-  const params = useParams();
-  const id = params.id;
+  const [title, setTitle] = useState('');
+  const { mutate, isPending: isLoading } = usePost('main/task');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    setTitle(event.target.value);
   };
 
   const handleSave = () => {
-    console.log(name, id);
-    if (!name) {
+    console.log(title);
+    if (!title) {
       toast.error('Please enter a title');
       return;
     }
 
     mutate(
-      { card: name, mainTask_id: id },
+      { title },
       {
         onSuccess: () => {
-          toast.success('List created successfully!');
+          toast.success('Task created successfully!');
           refetch();
-          setName('');
+          setTitle('');
           onClose();
         },
         onError: (err) => {
-          toast.error(err.message ?? 'Failed to create List');
-          console.error('Failed to create List:', err);
+          toast.error('Failed to create task');
+          console.error('Failed to create task:', err);
         },
       },
     );
@@ -62,27 +56,24 @@ export function AddListDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add List</DialogTitle>
-          <DialogDescription>
-            Add List of Task Card. It&apos;s easy!
-          </DialogDescription>
+          <DialogTitle>Add Main Task</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
+            <Label htmlFor="title" className="text-right">
+              Title
             </Label>
             <Input
-              id="name"
-              value={name}
+              id="title"
+              value={title}
               onChange={handleNameChange}
               className="col-span-3"
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSave}>
-            Save changes
+          <Button type="button" onClick={handleSave} disabled={isLoading}>
+            {isLoading ? 'Saving...' : 'Save'}
           </Button>
         </DialogFooter>
       </DialogContent>

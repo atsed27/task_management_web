@@ -6,10 +6,11 @@ import { Pencil, Plus } from 'lucide-react';
 import { AddListDialog } from '@/components/dialog/AddTask';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditCardDialog } from '@/components/dialog/EditCard';
-import { card } from '@/constants/data';
 import { ADDCarDialog } from '@/components/dialog/AddCard';
-import { Task } from '@/type/task/type';
+import { CardData, Task } from '@/type/task/type';
 import { DetailTask } from '@/components/dialog/detailTask';
+import { useFetch } from '@/hook/useFetch';
+import { useParams } from 'next/navigation';
 
 function TaskList() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -38,6 +39,13 @@ function TaskList() {
     openDetailDialog();
   };
 
+  const params = useParams();
+  const id = params.id;
+  // Get card data
+  const { data, refetch } = useFetch(`main/card/${id}`);
+  const card: CardData[] = Array.isArray(data) ? data : [];
+  console.log(data);
+
   return (
     <div className="m-auto mx-4 flex items-start gap-4">
       <div className="flex items-center gap-4">
@@ -48,18 +56,20 @@ function TaskList() {
             </CardHeader>
             <CardContent>
               <div>
-                {item.task.map((task, index) => (
-                  <div
-                    key={index}
-                    className="my-2 w-full flex items-start justify-between bg-gray-100 gap-2 hover:bg-gray-300 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
-                    onClick={() => openTaskDetails(task)}
-                  >
-                    <h2 className="p-2 items-center"> {task.title}</h2>
-                    <button onClick={openCardEdit}>
-                      <Pencil />
-                    </button>
-                  </div>
-                ))}
+                {item.tasks.map((task, index) =>
+                  task ? (
+                    <div
+                      key={index}
+                      className="my-2 w-full flex items-start justify-between bg-gray-100 gap-2 hover:bg-gray-300 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                      onClick={() => openTaskDetails(task)}
+                    >
+                      <h2 className="p-2 items-center"> {task.title}</h2>
+                      <button onClick={openCardEdit}>
+                        <Pencil />
+                      </button>
+                    </div>
+                  ) : null,
+                )}
               </div>
               <Button variant="outline" onClick={openCardDialog}>
                 <Plus />
@@ -77,7 +87,11 @@ function TaskList() {
         </Button>
       </div>
 
-      <AddListDialog open={isDialogOpen} onClose={closeDialog} />
+      <AddListDialog
+        open={isDialogOpen}
+        onClose={closeDialog}
+        refetch={refetch}
+      />
       <ADDCarDialog open={cardOpen} onClose={closeCardDialog} />
       <EditCardDialog open={cardEdit} onClose={closeCardEdit} />
       <DetailTask

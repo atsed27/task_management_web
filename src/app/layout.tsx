@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import './globals.css';
 import Sidebar from '@/components/Layout/Sidebar';
+import { Toaster } from 'react-hot-toast';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({
@@ -29,6 +30,7 @@ export default function RootLayout({
             <Sidebar />
             <main className="hide-scrollbar h-screen w-screen overflow-auto bg-muted pt-16">
               {children}
+              <Toaster position="top-right" />
             </main>
           </div>
         </QueryClientProvider>
