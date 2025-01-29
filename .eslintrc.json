@@ -8,16 +8,17 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "no-console": "warn",
-    "no-unused-vars": "warn",
     "no-var": "error",
     "prefer-const": "error",
     "prettier/prettier": "warn",
+    "no-unused-vars": "warn",
     "@typescript-eslint/no-unused-vars": [
       "warn",
-      { "argsIgnorePattern": "^_" }
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "warn",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-floating-promises": "warn" // Optional rule to catch unhandled promises
   }
 }

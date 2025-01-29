@@ -1,6 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+
+import { useState } from 'react';
+import { usePost } from '@/hook/usePost';
+import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -8,51 +13,47 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { useState } from 'react';
-import { usePost } from '@/hook/usePost';
-import toast from 'react-hot-toast';
-import { useParams } from 'next/navigation';
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
-export function AddListDialog({
+export function AddDetails({
   open,
   onClose,
   refetch,
+  selectedCardId,
 }: {
   open: boolean;
   onClose: () => void;
   refetch: () => void;
+  selectedCardId: string | null;
 }) {
-  const [name, setName] = useState('');
-  const { mutate } = usePost('main/card');
+  const [title, setTitle] = useState('');
+
   const params = useParams();
   const id = params.id;
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    setTitle(event.target.value);
   };
 
-  const handleSave = () => {
-    console.log(name, id);
-    if (!name) {
-      toast.error('Please enter a title');
-      return;
-    }
+  const { mutate } = usePost(`task/subtask`);
 
+  const handleSave = () => {
+    console.log(id);
     mutate(
-      { card: name, mainTask_id: id },
+      { title, task_id: selectedCardId },
       {
         onSuccess: () => {
-          toast.success('List created successfully!');
+          toast.success('Task created successfully!');
           refetch();
-          setName('');
+          setTitle('');
           onClose();
         },
         onError: (err) => {
-          toast.error(err.message ?? 'Failed to create List');
-          console.error('Failed to create List:', err);
+          toast.error('Failed to create task');
+          console.error('Failed to create task:', err);
+          onClose();
         },
       },
     );
@@ -62,19 +63,19 @@ export function AddListDialog({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add List</DialogTitle>
+          <DialogTitle>Add Sub Task</DialogTitle>
           <DialogDescription>
-            Add List of Task Card. It&apos;s easy!
+            Add Details of Sub Task. It&apos;s easy!
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
+              Sub Task
             </Label>
             <Input
-              id="name"
-              value={name}
+              id="tiltle"
+              value={title}
               onChange={handleNameChange}
               className="col-span-3"
             />
