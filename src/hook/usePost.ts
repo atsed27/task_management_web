@@ -14,6 +14,7 @@ export function usePost<TRequestBody = unknown, TResponse = unknown>(
       );
       return response.data;
     } catch (error) {
+      console.log('error', error);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.message || 'An error occurred';

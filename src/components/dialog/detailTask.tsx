@@ -10,7 +10,7 @@ import {
 } from '../ui/dialog';
 import { useState } from 'react';
 import Image from 'next/image';
-import { file, Task } from '@/type/task/type';
+import { file, subTask, Task } from '@/type/task/type';
 import { AddDetails } from './Details/AddDetails';
 import { AddImage } from './Details/AddImage';
 import { useFetch } from '@/hook/useFetch';
@@ -57,8 +57,13 @@ export function DetailTask({
 
   console.log('taskDetails', taskDetails);
   const { data, refetch: refachfile } = useFetch(`file/${taskDetails?.id}`);
-
   const files: file[] = Array.isArray(data) && data.length > 0 ? data : [];
+
+  const { data: subTaskData, refetch: refecheSubTask } = useFetch(
+    `task/subtask/${taskDetails?.id}`,
+  );
+  const subTask: subTask[] =
+    Array.isArray(subTaskData) && subTaskData.length > 0 ? subTaskData : [];
 
   return (
     <>
@@ -132,15 +137,15 @@ export function DetailTask({
 
                 <div className="mt-4">
                   <h3 className="font-semibold">Subtasks:</h3>
-                  {taskDetails.subtasks && taskDetails.subtasks.length > 0 ? (
+                  {subTask.length > 0 ? (
                     <ul className="mt-2 space-y-2">
-                      {taskDetails.subtasks.map((subtask) => (
+                      {subTask.map((subtask) => (
                         <li
                           key={subtask.id}
                           className="flex justify-between items-center bg-gray-100 p-2 rounded-md"
                         >
                           <div>
-                            <p className="font-medium">{subtask.title}</p>
+                            <p className="font-medium">Title:{subtask.title}</p>
                             <p className="text-sm text-gray-500">
                               Status: {subtask.status}
                             </p>
@@ -210,6 +215,7 @@ export function DetailTask({
         open={isDialogOpen}
         onClose={closeDialog}
         refetch={refetch}
+        refecheSubTask={refecheSubTask}
       />
       <AddImage
         selectedCardId={selectedCardId}
