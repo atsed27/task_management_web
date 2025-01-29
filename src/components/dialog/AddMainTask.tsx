@@ -22,15 +22,17 @@ export function AddMainDialog({
   refetch: () => void;
 }) {
   const [title, setTitle] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const { mutate, isPending: isLoading } = usePost('main/task');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
+    setError(null); // Clear error when the user starts typing again
   };
 
   const handleSave = () => {
-    if (!title) {
-      toast.error('Please enter a title');
+    if (!title.trim()) {
+      setError('Title is required');
       return;
     }
 
@@ -67,7 +69,11 @@ export function AddMainDialog({
               value={title}
               onChange={handleNameChange}
               className="col-span-3"
+              placeholder="Enter task title"
             />
+            {error && (
+              <p className="text-red-600 text-sm col-span-4">{error}</p>
+            )}
           </div>
         </div>
         <DialogFooter>

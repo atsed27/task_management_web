@@ -209,7 +209,6 @@ export function DetailTask({
         </Dialog>
       )}
 
-      {/* Add Subtask Dialog */}
       <AddDetails
         selectedCardId={selectedCardId}
         open={isDialogOpen}

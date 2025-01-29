@@ -26,18 +26,19 @@ export function AddListDialog({
   refetch: () => void;
 }) {
   const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const { mutate } = usePost('main/card');
   const params = useParams();
   const id = params.id;
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
+    setError(null);
   };
 
   const handleSave = () => {
-    console.log(name, id);
-    if (!name) {
-      toast.error('Please enter a title');
+    if (!name.trim()) {
+      setError('Please enter a list name');
       return;
     }
 
@@ -77,7 +78,11 @@ export function AddListDialog({
               value={name}
               onChange={handleNameChange}
               className="col-span-3"
+              placeholder="Enter list name"
             />
+            {error && (
+              <p className="text-red-600 text-sm col-span-4">{error}</p>
+            )}
           </div>
         </div>
         <DialogFooter>

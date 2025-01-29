@@ -36,7 +36,7 @@ export function AddDetails({
   selectedCardId: string | null;
 }) {
   const [title, setTitle] = useState('');
-  const [status, setStatus] = useState('Pending'); // Default status to 'Pending'
+  const [status, setStatus] = useState('Pending');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);

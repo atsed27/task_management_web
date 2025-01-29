@@ -6,7 +6,7 @@ import { Pencil, Plus } from 'lucide-react';
 import { AddListDialog } from '@/components/dialog/AddTask';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EditCardDialog } from '@/components/dialog/EditCard';
-import { ADDCarDialog } from '@/components/dialog/AddCard';
+import { AddCardDialog } from '@/components/dialog/AddCard';
 import { CardData, Task } from '@/type/task/type';
 import { DetailTask } from '@/components/dialog/detailTask';
 import { useFetch } from '@/hook/useFetch';
@@ -97,7 +97,7 @@ function TaskList() {
         onClose={closeDialog}
         refetch={refetch}
       />
-      <ADDCarDialog
+      <AddCardDialog
         open={cardOpen}
         onClose={closeCardDialog}
         refetch={refetch}
