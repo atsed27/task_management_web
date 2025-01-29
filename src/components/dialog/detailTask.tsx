@@ -163,7 +163,7 @@ export function DetailTask({
                     Add Subtask
                   </Button>
                   <Button onClick={() => openImage(taskDetails.id)}>
-                    Attach Image
+                    Attach file
                   </Button>
                 </div>
               </div>

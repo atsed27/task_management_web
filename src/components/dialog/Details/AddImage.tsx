@@ -49,6 +49,26 @@ export function AddImage({
     }
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const droppedFile = event.dataTransfer.files[0];
+    if (droppedFile) {
+      setFile(droppedFile);
+
+      if (droppedFile.type.startsWith('image/')) {
+        setPreview(URL.createObjectURL(droppedFile));
+      } else {
+        setPreview(null);
+      }
+    }
+  };
+
   const handleSave = async () => {
     if (!file) {
       toast.error('Please select a file to upload.');
@@ -89,7 +109,17 @@ export function AddImage({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div
+            className="grid grid-cols-4 items-center gap-4"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            style={{
+              border: '2px dashed #ccc',
+              padding: '1rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+            }}
+          >
             <Label htmlFor="file" className="text-right">
               File
             </Label>
@@ -102,7 +132,6 @@ export function AddImage({
             />
           </div>
 
-          {/* File Preview (Image or File Name) */}
           {file && (
             <div className="flex justify-center mt-2">
               {preview ? (
