@@ -10,23 +10,56 @@ import {
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useState } from 'react';
+import { usePost } from '@/hook/usePost';
+import toast from 'react-hot-toast';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export function ADDCarDialog({
   open,
   onClose,
+  refetch,
+  cardId,
 }: {
   open: boolean;
   onClose: () => void;
+  refetch: () => void;
+  cardId: string | null;
 }) {
-  const [name, setName] = useState('Pedro Duarte');
-  const [username, setUsername] = useState('@peduarte');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('Pending');
+  const { mutate, isPending: isLoading } = usePost(`task/${cardId}`);
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
+  const handleSave = () => {
+    if (!title) {
+      toast.error('Please enter a title');
+      return;
+    }
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+    mutate(
+      { title, description, status },
+      {
+        onSuccess: () => {
+          toast.success('Task created successfully!');
+          refetch();
+          setTitle('');
+          setDescription('');
+          setStatus('Pending');
+          onClose();
+        },
+        onError: (err) => {
+          toast.error('Failed to create task');
+          console.error('Failed to create task:', err);
+          onClose();
+        },
+      },
+    );
   };
 
   return (
@@ -35,36 +68,56 @@ export function ADDCarDialog({
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
           <DialogDescription>
-            Can Add Task Now It&apos;s easy!
+            Create a new task with a title, description, and status.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+            <Label htmlFor="title" className="text-right">
               Name
             </Label>
             <Input
-              id="name"
-              value={name}
-              onChange={handleNameChange}
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="col-span-3"
+              placeholder="Enter task name"
             />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
+            <Label htmlFor="description" className="text-right">
+              Description
             </Label>
             <Input
-              id="username"
-              value={username}
-              onChange={handleUsernameChange}
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="col-span-3"
+              placeholder="Enter task description"
             />
           </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="status" className="text-right">
+              Status
+            </Label>
+            <Select onValueChange={setStatus} defaultValue={status}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="In Progress">In Progress</SelectItem>
+                <SelectItem value="Completed">Completed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
         <DialogFooter>
-          <Button type="submit" onClick={() => onClose()}>
-            Save changes
+          <Button type="submit" onClick={handleSave} disabled={isLoading}>
+            {isLoading ? 'Saving...' : 'Save changes'}
           </Button>
         </DialogFooter>
       </DialogContent>
