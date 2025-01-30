@@ -55,15 +55,19 @@ export function DetailTask({
   };
   const closeImage = () => setIsImageOpen(false);
 
-  console.log('taskDetails', taskDetails);
-  const { data, refetch: refachfile } = useFetch(`file/${taskDetails?.id}`);
-  const files: file[] = Array.isArray(data) && data.length > 0 ? data : [];
+  const { data, refetch: refachfile } = useFetch(
+    taskDetails?.id ? `file/${taskDetails.id}` : '',
+  );
+  const files: file[] =
+    taskDetails?.id && Array.isArray(data) && data.length > 0 ? data : [];
 
   const { data: subTaskData, refetch: refecheSubTask } = useFetch(
-    `task/subtask/${taskDetails?.id}`,
+    taskDetails?.id ? `task/subtask/${taskDetails.id}` : '',
   );
   const subTask: subTask[] =
-    Array.isArray(subTaskData) && subTaskData.length > 0 ? subTaskData : [];
+    taskDetails?.id && Array.isArray(subTaskData) && subTaskData.length > 0
+      ? subTaskData
+      : [];
 
   return (
     <>
